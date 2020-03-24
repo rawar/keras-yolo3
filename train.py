@@ -2,12 +2,13 @@
 Retrain the YOLO model for your own dataset.
 """
 
+import tensorflow as tf
 import numpy as np
-import keras.backend as K
-from keras.layers import Input, Lambda
-from keras.models import Model
-from keras.optimizers import Adam
-from keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
+import tensorflow.keras.backend as K
+from tensorflow.keras.layers import Input, Lambda
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
 
 from yolo3.model import preprocess_true_boxes, yolo_body, tiny_yolo_body, yolo_loss
 from yolo3.utils import get_random_data
@@ -18,7 +19,7 @@ def _main():
     annotation_path = '_annotations.txt'
     log_dir = 'logs/000/'
     # './export/_annotations.txt'
-    classes_path = '_classes.txt'
+    classes_path = 'model_data/starwars_classes.txt'
     anchors_path = 'model_data/yolo_anchors.txt'
     class_names = get_classes(classes_path)
     print("-------------------CLASS NAMES-------------------")
