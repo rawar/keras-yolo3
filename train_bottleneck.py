@@ -16,7 +16,7 @@ from yolo3.utils import get_random_data
 
 def _main():
     annotation_path = 'model_data/starwars_train.txt'
-    log_dir = 'logs/000/'
+    log_dir = 'logs/'
     classes_path = 'model_data/starwars_classes.txt'
     anchors_path = 'model_data/yolo_anchors.txt'
     class_names = get_classes(classes_path)
@@ -63,13 +63,17 @@ def _main():
         batch_size=8
         print("Training last layers with bottleneck features")
         print('with {} samples, val on {} samples and batch size {}.'.format(num_train, num_val, batch_size))
-        last_layer_model.compile(optimizer='adam', loss={'yolo_loss': lambda y_true, y_pred: y_pred})
+        #last_layer_model.compile(optimizer='adam', loss={'yolo_loss': lambda y_true, y_pred: y_pred})
+        #last_layer_model.compile(optimizer='adam')
+        last_layer_model.compile(optimizer=Adam(lr=1e-4))
+
         last_layer_model.fit_generator(bottleneck_generator(lines[:num_train], batch_size, input_shape, anchors, num_classes, bottlenecks_train),
                 steps_per_epoch=max(1, num_train//batch_size),
                 validation_data=bottleneck_generator(lines[num_train:], batch_size, input_shape, anchors, num_classes, bottlenecks_val),
                 validation_steps=max(1, num_val//batch_size),
                 epochs=30,
                 initial_epoch=0, max_queue_size=1)
+
         model.save_weights(log_dir + 'trained_weights_stage_0.h5')
         
         # train last layers with random augmented data

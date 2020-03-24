@@ -3,12 +3,14 @@ import xml.etree.ElementTree as ET
 
 classes = ["r2d2","c3po","luke-skywalker","obi-wan-kinobi","sturmtruppler"]
 annotation_path = '/Users/rwartala/Google Drive/data/ix-tut-annotations/'
-image_path = '/Users/rwartala/Google Drive/data/ix-tut-processed'
 
-def convert_voc_annotation(voc_filename, image_filename):
+def convert_voc_annotation(voc_filename):
     in_file = open(voc_filename)
     tree=ET.parse(in_file)
     root = tree.getroot()
+    yolo_line = ""
+
+    image_filename = root.find('path').text
 
     for obj in root.iter('object'):
         difficult = obj.find('difficult').text
@@ -23,13 +25,10 @@ def convert_voc_annotation(voc_filename, image_filename):
     return yolo_line
 
 
-# erstelle liste aller Bild Dateinamen
-image_filenames = glob.glob(image_path+'/*')
 # erstelle Liste aller VOC = Bild Dateinamen mit XML
-voc_filenames = glob.glob(annotation_path+'/*')
+voc_filenames = glob.glob(annotation_path+'/*.xml')
+voc_filenames.sort()
 
-files_dict = dict(zip(voc_filenames, image_filenames))
-
-for voc_filename in files_dict:
-    yolo_line = convert_voc_annotation(voc_filename, files_dict[voc_filename])
+for voc_filename in voc_filenames:
+    yolo_line = convert_voc_annotation(voc_filename)
     print(yolo_line)
